@@ -20,6 +20,8 @@ public class UserController {
     UserController(UserService userService){
         this.userService = userService;
     }
+
+    //TO BE REMOVED, jus to work with users
     @GetMapping("/api/users")
     public ResponseEntity<List<User>> getUsers(){
         return new ResponseEntity<List<User>>(userService.getUsers(), HttpStatus.OK);
