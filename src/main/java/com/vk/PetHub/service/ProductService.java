@@ -3,12 +3,15 @@ package com.vk.PetHub.service;
 import com.vk.PetHub.dto.ProductCreateRequest;
 import com.vk.PetHub.dto.ProductDetailedResponse;
 import com.vk.PetHub.dto.ProductSummaryResponse;
+import com.vk.PetHub.dto.ProductUpdateRequest;
 import com.vk.PetHub.exception.ProductAlreadyExistsException;
 import com.vk.PetHub.exception.ProductNotFoundException;
-import com.vk.PetHub.exception.UserAlreadyExistsException;
 import com.vk.PetHub.model.Product;
 import com.vk.PetHub.repository.ProductRepository;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +25,16 @@ public class ProductService {
         this.productRepo = productRepo;
     }
 
-    public List<ProductSummaryResponse> getAllProducts() {
+    public List<ProductSummaryResponse> getAllProducts(String category) {
         List<ProductSummaryResponse> response = new ArrayList<>();
-        List<Product> allProducts = productRepo.findAll();
+
+        List<Product> allProducts;
+        if(category!=null&&!category.isBlank()){
+            allProducts = productRepo.findAllByCategory(category);
+        }
+        else{
+            allProducts = productRepo.findAll();
+        }
 
         for(Product product:allProducts){
             response.add(
@@ -44,15 +54,15 @@ public class ProductService {
     public void createProduct(ProductCreateRequest request) {
 
         //Product Already exists with same name in same category
-        if(productRepo.existsByName(request.name())&&productRepo.existsByCategory(request.category())){
+        if(productRepo.existsByNameIgnoreCaseAndCategoryIgnoreCase(request.name(), request.category())){
             throw new ProductAlreadyExistsException("Product Already Exists");
         }
 
         Product product = new Product();
-        product.setName(request.name());
-        product.setCategory(request.category());
-        product.setDescription(request.description());
-        product.setImagePath(request.imagePath());
+        product.setName(request.name().trim());
+        product.setCategory(request.category().trim());
+        product.setDescription(request.description().trim());
+        product.setImagePath(request.imagePath().trim());
         product.setPrice(request.price());
         product.setStockQuantity(request.stockQuantity());
 
@@ -73,4 +83,27 @@ public class ProductService {
                 product.getStockQuantity()
         );
     }
+
+    public Product getProductEntityById(Long id) {
+        return productRepo.findById(id).orElseThrow(()->new ProductNotFoundException(id));
+    }
+
+
+    public void updateProduct(Long id,ProductUpdateRequest request) {
+
+        Product product = getProductEntityById(id);
+        //Product Already exists with same name in same category
+        if(productRepo.existsByNameIgnoreCaseAndCategoryIgnoreCaseAndIdNot(request.name(), product.getCategory(),id)){
+            throw new ProductAlreadyExistsException("Product Already Exists");
+        }
+
+        product.setName(request.name().trim());
+        product.setDescription(request.description().trim());
+        product.setImagePath(request.imagePath().trim());
+        product.setPrice(request.price());
+        product.setStockQuantity(request.stockQuantity());
+
+        productRepo.save(product);
+    }
+
 }

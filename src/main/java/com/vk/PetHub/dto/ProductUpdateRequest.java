@@ -7,12 +7,9 @@ import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 
-public record ProductCreateRequest(
-        @NotBlank(message = "Product name is required")
+public record ProductUpdateRequest(
+        @NotBlank(message = "Name is required")
         String name,
-
-        @NotBlank(message = "Category is required")
-        String category,
 
         @NotBlank(message = "Description is required")
         String description,

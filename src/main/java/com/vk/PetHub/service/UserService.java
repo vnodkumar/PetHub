@@ -9,6 +9,7 @@ import com.vk.PetHub.model.User;
 import com.vk.PetHub.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -36,11 +37,11 @@ public class UserService {
         }
 
         User user = new User();
-        user.setName(request.name());
-        user.setEmail(request.email());
+        user.setName(request.name().trim());
+        user.setEmail(request.email().trim());
         user.setPassword(passwordEncoder.encode(request.password()));
-        user.setAddress(request.address());
-        user.setPhone(request.phone());
+        user.setAddress(StringUtils.hasText(request.address())? request.address().trim() : null);
+        user.setPhone(StringUtils.hasText(request.phone())? request.phone().trim() : null);
         userRepo.save(user);
     }
 
@@ -59,13 +60,15 @@ public class UserService {
 
     public void updateUser(Long id, UserUpdateRequest request) {
         User user =  userRepo.findById(id).orElseThrow(()->new UserNotFoundException(id));
-        if(request.name()!=null)
-            user.setName(request.name());
-        if(request.address()!=null)
-            user.setAddress(request.address());
-        if(request.phone()!=null)
-            user.setPhone(request.phone());
+
+        user.setName(request.name().trim());
+        user.setAddress(request.address().trim());
+        user.setPhone(request.phone().trim());
 
         userRepo.save(user);
+    }
+
+    public User getUserEntityById(Long id) {
+        return userRepo.findById(id).orElseThrow(()->new UserNotFoundException(id));
     }
 }

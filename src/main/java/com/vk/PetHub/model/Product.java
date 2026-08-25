@@ -25,8 +25,10 @@ public class Product {
     @Column(nullable = false)
     private String category;
 
+    @Column(nullable = false)
     private String description;
 
+    @Column(nullable = false)
     private String imagePath;
 
     @Column(nullable = false, precision = 10, scale = 2)
