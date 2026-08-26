@@ -21,7 +21,7 @@ public class ProductController {
 
     private final ProductService productService;
 
-    ProductController(ProductService productService){
+    public ProductController(ProductService productService){
         this.productService=productService;
     }
 
@@ -45,9 +45,15 @@ public class ProductController {
 
     //Update Product
     @PutMapping("/api/products/{id}")
-    public ResponseEntity<HttpStatus> updateProduct(@PathVariable @Positive(message = "User Id should be positive") Long id,@Valid @RequestBody ProductUpdateRequest request){
+    public ResponseEntity<HttpStatus> updateProduct(@PathVariable @Positive(message = "Product Id should be positive") Long id,@Valid @RequestBody ProductUpdateRequest request){
         productService.updateProduct(id,request);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    //Delete Product
+    @DeleteMapping("/api/products/{id}")
+    public ResponseEntity<HttpStatus> deleteProduct(@PathVariable @Positive(message = "Product Id should be positive") Long id){
+        productService.deleteProduct(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

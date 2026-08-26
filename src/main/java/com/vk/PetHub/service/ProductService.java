@@ -8,10 +8,8 @@ import com.vk.PetHub.exception.ProductAlreadyExistsException;
 import com.vk.PetHub.exception.ProductNotFoundException;
 import com.vk.PetHub.model.Product;
 import com.vk.PetHub.repository.ProductRepository;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +19,7 @@ public class ProductService {
 
     private final ProductRepository productRepo;
 
-    ProductService(ProductRepository productRepo){
+    public ProductService(ProductRepository productRepo){
         this.productRepo = productRepo;
     }
 
@@ -106,4 +104,11 @@ public class ProductService {
         productRepo.save(product);
     }
 
+    public void deleteProduct(Long id) {
+        Product product = getProductEntityById(id);
+
+        product.setActive(false);
+
+        productRepo.save(product);
+    }
 }

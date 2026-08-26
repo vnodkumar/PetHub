@@ -19,7 +19,7 @@ public class UserService {
     private final UserRepository userRepo;
     private final PasswordEncoder passwordEncoder;
 
-    UserService(UserRepository userRepo,PasswordEncoder passwordEncoder){
+    public UserService(UserRepository userRepo,PasswordEncoder passwordEncoder){
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
     }

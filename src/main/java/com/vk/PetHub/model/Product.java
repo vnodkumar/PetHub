@@ -3,12 +3,14 @@ package com.vk.PetHub.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
 @Table(name="products")
+@SQLRestriction("active=true")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -36,6 +38,9 @@ public class Product {
 
     @Column(name="stock_quantity",nullable = false)
     private Integer stockQuantity;
+
+    @Column(nullable = false)
+    private boolean active = true;
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
     @ToString.Exclude

@@ -20,7 +20,7 @@ public class CartItemController {
 
     private final CartItemService cartService;
 
-    CartItemController(CartItemService cartItemService){
+    public CartItemController(CartItemService cartItemService){
         this.cartService=cartItemService;
     }
 
