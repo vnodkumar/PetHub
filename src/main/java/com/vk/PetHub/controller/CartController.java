@@ -3,8 +3,7 @@ package com.vk.PetHub.controller;
 import com.vk.PetHub.dto.CartItemCreateRequest;
 import com.vk.PetHub.dto.CartItemResponse;
 import com.vk.PetHub.dto.CartItemUpdateRequest;
-import com.vk.PetHub.model.CartItem;
-import com.vk.PetHub.service.CartItemService;
+import com.vk.PetHub.service.CartService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
@@ -16,12 +15,12 @@ import java.util.List;
 
 @RestController
 @Validated
-public class CartItemController {
+public class CartController {
 
-    private final CartItemService cartService;
+    private final CartService cartService;
 
-    public CartItemController(CartItemService cartItemService){
-        this.cartService=cartItemService;
+    public CartController(CartService cartService){
+        this.cartService= cartService;
     }
 
     @PostMapping("/api/cart")
@@ -30,9 +29,9 @@ public class CartItemController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/api/cart/{userId}")
-    public ResponseEntity<List<CartItemResponse>> getCart(@PathVariable @Positive(message = "User Id must be positive") Long userId){
-        return ResponseEntity.ok(cartService.getCart(userId));
+    @GetMapping("/api/cart/user/{id}")
+    public ResponseEntity<List<CartItemResponse>> getCart(@PathVariable @Positive(message = "User Id must be positive") Long id){
+        return ResponseEntity.ok(cartService.getCart(id));
     }
 
     @PutMapping("/api/cart/{cartItemId}")

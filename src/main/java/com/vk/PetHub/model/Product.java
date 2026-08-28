@@ -10,7 +10,6 @@ import java.util.List;
 
 @Entity
 @Table(name="products")
-@SQLRestriction("active=true")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

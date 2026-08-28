@@ -1,5 +1,6 @@
 package com.vk.PetHub.exception;
 
+import com.vk.PetHub.dto.CartValidationErrorResponse;
 import com.vk.PetHub.dto.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,27 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(ex.getMessage(),HttpStatus.CONFLICT.value());
         return new ResponseEntity<>(error,HttpStatus.CONFLICT);
     }
+
+    //Cart Empty
+    @ExceptionHandler(CartEmptyException.class)
+    public ResponseEntity<ErrorResponse> handleCartEmpty(CartEmptyException ex){
+        ErrorResponse error = new ErrorResponse(ex.getMessage(),HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
+    }
+    //cart validation during checkout
+    @ExceptionHandler(CartCheckoutException.class)
+    public ResponseEntity<CartValidationErrorResponse> handleCartValidation(CartCheckoutException ex){
+        CartValidationErrorResponse error = new CartValidationErrorResponse(ex.getMessage(),ex.getIssues(),HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
+    }
+
+    //Order Not Found
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleOrderNotFound(OrderNotFoundException ex){
+        ErrorResponse error = new ErrorResponse(ex.getMessage(),HttpStatus.NOT_FOUND.value());
+        return new ResponseEntity<>(error,HttpStatus.NOT_FOUND);
+    }
+
     //Method args validation
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex){

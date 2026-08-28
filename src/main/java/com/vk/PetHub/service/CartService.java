@@ -8,6 +8,8 @@ import com.vk.PetHub.model.CartItem;
 import com.vk.PetHub.model.Product;
 import com.vk.PetHub.model.User;
 import com.vk.PetHub.repository.CartItemRepository;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,13 +17,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CartItemService {
+public class CartService {
 
     private final CartItemRepository cartRepo;
     private final UserService userService;
     private final ProductService productService;
 
-    public CartItemService(CartItemRepository cartRepo, UserService userService,ProductService productService){
+    public CartService(CartItemRepository cartRepo, UserService userService, ProductService productService){
         this.cartRepo=cartRepo;
         this.productService=productService;
         this.userService=userService;
@@ -63,16 +65,23 @@ public class CartItemService {
         List<CartItemResponse> response = new ArrayList<>();
 
         for(CartItem cartItem:cartItems){
+            Product product = cartItem.getProduct();
             response.add(
                     new CartItemResponse(
                             cartItem.getId(),
                             cartItem.getUser().getId(),
-                            cartItem.getProduct().getId(),
+                            product.getName(),
+                            product.getPrice(),
+                            product.getImagePath(),
                             cartItem.getQuantity()
                     )
             );
         }
         return response;
+    }
+
+    public List<CartItem> getCartEntity(User user){
+        return cartRepo.findAllByUser(user);
     }
 
     public void updateCartItem(Long cartItemId, CartItemUpdateRequest request) {

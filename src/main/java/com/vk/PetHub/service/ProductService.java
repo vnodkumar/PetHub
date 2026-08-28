@@ -8,7 +8,6 @@ import com.vk.PetHub.exception.ProductAlreadyExistsException;
 import com.vk.PetHub.exception.ProductNotFoundException;
 import com.vk.PetHub.model.Product;
 import com.vk.PetHub.repository.ProductRepository;
-import jakarta.validation.constraints.Positive;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,10 +27,10 @@ public class ProductService {
 
         List<Product> allProducts;
         if(category!=null&&!category.isBlank()){
-            allProducts = productRepo.findAllByCategory(category);
+            allProducts = productRepo.findAllByCategoryAndActiveTrue(category);
         }
         else{
-            allProducts = productRepo.findAll();
+            allProducts = productRepo.findAllByActiveTrue();
         }
 
         for(Product product:allProducts){
@@ -109,6 +108,10 @@ public class ProductService {
 
         product.setActive(false);
 
+        productRepo.save(product);
+    }
+
+    public void save(Product product){
         productRepo.save(product);
     }
 }

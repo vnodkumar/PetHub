@@ -12,7 +12,9 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
 
     boolean existsByNameIgnoreCaseAndCategoryIgnoreCase(String name,String category);
 
-    List<Product> findAllByCategory(String category);
+    List<Product> findAllByCategoryAndActiveTrue(String category);
 
     boolean existsByNameIgnoreCaseAndCategoryIgnoreCaseAndIdNot(@NotBlank(message = "Name is required") String name, String category, Long id);
+
+    List<Product> findAllByActiveTrue();
 }
