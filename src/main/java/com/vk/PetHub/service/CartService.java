@@ -8,8 +8,6 @@ import com.vk.PetHub.model.CartItem;
 import com.vk.PetHub.model.Product;
 import com.vk.PetHub.model.User;
 import com.vk.PetHub.repository.CartItemRepository;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -70,6 +68,7 @@ public class CartService {
                     new CartItemResponse(
                             cartItem.getId(),
                             cartItem.getUser().getId(),
+                            product.getId(),
                             product.getName(),
                             product.getPrice(),
                             product.getImagePath(),

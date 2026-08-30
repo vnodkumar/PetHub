@@ -57,6 +57,19 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error,HttpStatus.NOT_FOUND);
     }
 
+    //Order Can't be Updated
+    @ExceptionHandler(OrderCannotBeUpdatedException.class)
+    public ResponseEntity<ErrorResponse> handleOrderUpdate(OrderCannotBeUpdatedException ex){
+        ErrorResponse error = new ErrorResponse(ex.getMessage(),HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
+    }
+    //order can't be cancelled
+    @ExceptionHandler(OrderCannotBeCancelledException.class)
+    public ResponseEntity<ErrorResponse> handleOrderCancel(OrderCannotBeCancelledException ex){
+        ErrorResponse error = new ErrorResponse(ex.getMessage(),HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
+    }
+
     //Method args validation
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex){

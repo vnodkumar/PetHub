@@ -39,7 +39,7 @@ public class UserService {
         User user = new User();
         user.setName(request.name().trim());
         user.setEmail(request.email().trim());
-        user.setPassword(passwordEncoder.encode(request.password()));
+        user.setPassword(passwordEncoder.encode(request.password().trim()));
         user.setAddress(StringUtils.hasText(request.address())? request.address().trim() : null);
         user.setPhone(StringUtils.hasText(request.phone())? request.phone().trim() : null);
         userRepo.save(user);
