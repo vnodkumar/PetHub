@@ -24,7 +24,7 @@ public class CartController {
         this.cartService= cartService;
     }
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<HttpStatus> createCartItem(@Valid @RequestBody CartItemCreateRequest request){
         cartService.createCartItem(request);
         return new ResponseEntity<>(HttpStatus.CREATED);

@@ -27,7 +27,7 @@ public class ProductController {
     }
 
     //Get All Products
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<ProductSummaryResponse>> getAllProducts(@RequestParam(required = false) String category){
         return ResponseEntity.ok(productService.getAllProducts(category));
     }
@@ -38,7 +38,7 @@ public class ProductController {
     }
 
     //Create New Product
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<HttpStatus> createProduct(@Valid @RequestBody ProductCreateRequest request){
         productService.createProduct(request);
         return new ResponseEntity<>(HttpStatus.CREATED);

@@ -26,7 +26,7 @@ public class UserController {
     }
 
     //TO BE REMOVED, jus to work with users
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<User>> getUsers(){
         return new ResponseEntity<List<User>>(userService.getUsers(), HttpStatus.OK);
     }

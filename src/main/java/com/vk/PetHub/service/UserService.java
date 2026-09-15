@@ -87,4 +87,8 @@ public class UserService implements UserDetailsService {
                 .roles(user.getRole().name())
                 .build();
     }
+
+    public User getUserEntityByEmail(String email) {
+        return userRepo.findByEmail(email);
+    }
 }
