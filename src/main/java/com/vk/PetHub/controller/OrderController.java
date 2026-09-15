@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/orders")
 @Validated
 public class OrderController {
 
@@ -24,29 +25,29 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @PostMapping("/api/orders")
+    @PostMapping("/")
     public ResponseEntity<HttpStatus> createOrder(@Valid @RequestBody OrderCreateRequest request){
         orderService.createOrder(request);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PutMapping("/api/orders/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<HttpStatus> updateOrder(@PathVariable @Positive(message = "Oder Id must be positive") Long id, @Valid @RequestBody OrderUpdateRequest request){
         orderService.updateOrder(id,request);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/api/orders/user/{id}")
+    @GetMapping("/user/{id}")
     public ResponseEntity<List<OrderSummaryResponse>> orderHistory(@PathVariable @Positive(message = "User Id must be positive") Long id){
         return new ResponseEntity<>(orderService.orderHistory(id),HttpStatus.OK);
     }
 
-    @GetMapping("/api/orders/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<OrderDetailedResponse> getOrder(@PathVariable @Positive(message = "Order Id must be positive") Long id){
         return  new ResponseEntity<>(orderService.getOrder(id),HttpStatus.OK);
     }
 
-    @PutMapping("/api/orders/{id}/cancel")
+    @PutMapping("/{id}/cancel")
     public ResponseEntity<HttpStatus> cancelOrder(@PathVariable @Positive(message = "Order Id must be positive") Long id){
         orderService.cancelOrder(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

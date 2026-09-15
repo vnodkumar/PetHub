@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/products")
 @Validated
 public class ProductController {
 
@@ -26,32 +27,32 @@ public class ProductController {
     }
 
     //Get All Products
-    @GetMapping("/api/products")
+    @GetMapping("/")
     public ResponseEntity<List<ProductSummaryResponse>> getAllProducts(@RequestParam(required = false) String category){
         return ResponseEntity.ok(productService.getAllProducts(category));
     }
     //Get One Product
-    @GetMapping("/api/products/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ProductDetailedResponse> getProductById(@PathVariable @Positive(message = "Product Id must be positive") Long id){
         return ResponseEntity.ok(productService.getProductById(id));
     }
 
     //Create New Product
-    @PostMapping("/api/products")
+    @PostMapping("/")
     public ResponseEntity<HttpStatus> createProduct(@Valid @RequestBody ProductCreateRequest request){
         productService.createProduct(request);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     //Update Product
-    @PutMapping("/api/products/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<HttpStatus> updateProduct(@PathVariable @Positive(message = "Product Id should be positive") Long id,@Valid @RequestBody ProductUpdateRequest request){
         productService.updateProduct(id,request);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     //Delete Product
-    @DeleteMapping("/api/products/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteProduct(@PathVariable @Positive(message = "Product Id should be positive") Long id){
         productService.deleteProduct(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

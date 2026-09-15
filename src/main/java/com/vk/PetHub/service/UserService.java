@@ -7,6 +7,9 @@ import com.vk.PetHub.exception.UserAlreadyExistsException;
 import com.vk.PetHub.exception.UserNotFoundException;
 import com.vk.PetHub.model.User;
 import com.vk.PetHub.repository.UserRepository;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -14,7 +17,7 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepo;
     private final PasswordEncoder passwordEncoder;
@@ -70,5 +73,18 @@ public class UserService {
 
     public User getUserEntityById(Long id) {
         return userRepo.findById(id).orElseThrow(()->new UserNotFoundException(id));
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepo.findByEmail(email);
+        if(user==null)  throw  new UsernameNotFoundException("User not found with email:"+email);
+
+        return org.springframework.security.core.userdetails.User
+                .builder()
+                .username(user.getEmail())
+                .password(user.getPassword())
+                .roles(user.getRole().name())
+                .build();
     }
 }

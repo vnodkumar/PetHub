@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/cart")
 @Validated
 public class CartController {
 
@@ -23,24 +24,24 @@ public class CartController {
         this.cartService= cartService;
     }
 
-    @PostMapping("/api/cart")
+    @PostMapping("/")
     public ResponseEntity<HttpStatus> createCartItem(@Valid @RequestBody CartItemCreateRequest request){
         cartService.createCartItem(request);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/api/cart/user/{id}")
+    @GetMapping("/user/{id}")
     public ResponseEntity<List<CartItemResponse>> getCart(@PathVariable @Positive(message = "User Id must be positive") Long id){
         return ResponseEntity.ok(cartService.getCart(id));
     }
 
-    @PutMapping("/api/cart/{cartItemId}")
+    @PutMapping("/{cartItemId}")
     public ResponseEntity<HttpStatus> updateCartItem(@PathVariable @Positive(message = "CartItem Id must be positive") Long cartItemId,@Valid @RequestBody CartItemUpdateRequest request){
         cartService.updateCartItem(cartItemId,request);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("/api/cart/{cartItemId}")
+    @DeleteMapping("/{cartItemId}")
     public ResponseEntity<HttpStatus> deleteCartItem(@PathVariable @Positive(message = "CartItem Id must be positive") Long cartItemId){
         cartService.deleteCartItem(cartItemId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

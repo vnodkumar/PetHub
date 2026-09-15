@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/users")
 @Validated
 public class UserController {
 
@@ -25,23 +26,23 @@ public class UserController {
     }
 
     //TO BE REMOVED, jus to work with users
-    @GetMapping("/api/users")
+    @GetMapping("/")
     public ResponseEntity<List<User>> getUsers(){
         return new ResponseEntity<List<User>>(userService.getUsers(), HttpStatus.OK);
     }
 
-    @GetMapping("/api/users/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable @Positive(message = "User Id must be positive") Long id){
         UserResponse resp = userService.getUserById(id);
         return ResponseEntity.ok(resp);
     }
-    @PostMapping("/api/users")
+    @PostMapping("/register")
     public ResponseEntity<HttpStatus> createUser(@Valid @RequestBody UserCreateRequest request){
         userService.createUser(request);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PutMapping("/api/users/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<HttpStatus> updateUser(@PathVariable @Positive(message = "User Id should be positive") Long id,@Valid @RequestBody UserUpdateRequest request){
         userService.updateUser(id,request);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
