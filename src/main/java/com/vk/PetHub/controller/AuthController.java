@@ -1,6 +1,7 @@
 package com.vk.PetHub.controller;
 
 import com.vk.PetHub.dto.CredentialDto;
+import com.vk.PetHub.service.JwtService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     public final AuthenticationManager authManager;
+    public final JwtService jwtService;
 
-    public AuthController(AuthenticationManager authManager){
+    public AuthController(AuthenticationManager authManager, JwtService jwtService){
         this.authManager=authManager;
+        this.jwtService=jwtService;
     }
 
 
@@ -26,7 +29,7 @@ public class AuthController {
                 authManager.authenticate(new UsernamePasswordAuthenticationToken(credential.email(),credential.password()));
 
         if(authentication.isAuthenticated())
-            return "success";
+            return jwtService.generateToken(credential.email());
 
         return "";
     }
