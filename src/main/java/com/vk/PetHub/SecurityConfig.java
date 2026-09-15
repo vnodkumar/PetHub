@@ -43,13 +43,25 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder){
-        UserDetails userDetails = User.
-                builder()
-                .username("vinod")
-                .password(passwordEncoder().encode("1234"))
-                .roles("USER")
-                .build();
-        return new InMemoryUserDetailsManager(userDetails);
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config){
+        return config.getAuthenticationManager();
     }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider(UserService userService){
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
+    }
+
+//    @Bean
+//    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder){
+//        UserDetails userDetails = User.
+//                builder()
+//                .username("vinod")
+//                .password(passwordEncoder().encode("1234"))
+//                .roles("USER")
+//                .build();
+//        return new InMemoryUserDetailsManager(userDetails);
+//    }
 }
