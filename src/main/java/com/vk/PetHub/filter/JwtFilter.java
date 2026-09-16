@@ -33,17 +33,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String token=null;
         String email=null;
-        Long userId=null;
-        String role=null;
 
         if(authHeader!=null && authHeader.startsWith("Bearer ")){
             token = authHeader.substring(7);
             email = jwtService.extractEmail(token);
-            userId = jwtService.extractUserId(token);
-            role = jwtService.extractRole(token);
         }
 
-        if(userId!=null && SecurityContextHolder.getContext().getAuthentication()==null){
+        if(email!=null && SecurityContextHolder.getContext().getAuthentication()==null){
             UserDetails userDetails = context.getBean(UserService.class).loadUserByUsername(email);
 
             if(jwtService.validateToken(token,userDetails)){

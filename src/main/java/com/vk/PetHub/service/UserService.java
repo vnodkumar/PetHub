@@ -5,6 +5,7 @@ import com.vk.PetHub.dto.UserUpdateRequest;
 import com.vk.PetHub.dto.UserResponse;
 import com.vk.PetHub.exception.UserAlreadyExistsException;
 import com.vk.PetHub.exception.UserNotFoundException;
+import com.vk.PetHub.model.CustomUserDetails;
 import com.vk.PetHub.model.User;
 import com.vk.PetHub.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,8 +29,23 @@ public class UserService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public List<User> getUsers(){
-        return userRepo.findAll();
+    public List<UserResponse> getUsers(){
+        List<UserResponse> response = new ArrayList<>();
+        List<User> users = userRepo.findAll();
+
+        for(User user:users){
+            response.add(
+                    new UserResponse(
+                            user.getId(),
+                            user.getName(),
+                            user.getEmail(),
+                            user.getPhone(),
+                            user.getAddress(),
+                            user.getCreatedAt()
+                    )
+            );
+        }
+        return response;
     }
 
     public void createUser(UserCreateRequest request) {
@@ -80,12 +97,7 @@ public class UserService implements UserDetailsService {
         User user = userRepo.findByEmail(email);
         if(user==null)  throw  new UsernameNotFoundException("User not found with email:"+email);
 
-        return org.springframework.security.core.userdetails.User
-                .builder()
-                .username(user.getEmail())
-                .password(user.getPassword())
-                .roles(user.getRole().name())
-                .build();
+        return new CustomUserDetails(user);
     }
 
     public User getUserEntityByEmail(String email) {

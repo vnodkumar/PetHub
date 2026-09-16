@@ -23,18 +23,10 @@ public class JwtService {
 
     @Value("${JWT_SECRET}")
     private String SECRET;
-    public final UserService userService;
-
-    public JwtService(UserService userService){
-        this.userService=userService;
-    }
 
     public String generateToken(String email) {
-        User user = userService.getUserEntityByEmail(email);
 
         Map<String,Object> claims = new HashMap<>();
-        claims.put("userId",user.getId());
-        claims.put("role",user.getRole().name());
 
         return createToken(claims, email);
     }
@@ -45,7 +37,7 @@ public class JwtService {
                 .claims(claims)
                 .subject(email)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis()+1000*60*3))
+                .expiration(new Date(System.currentTimeMillis()+1000*60*10))
                 .signWith(getSigningKey())
                 .compact();
     }
@@ -60,14 +52,6 @@ public class JwtService {
 
     public String extractEmail(String token){
         return extractClaim(token,Claims::getSubject);
-    }
-
-    public Long extractUserId(String token) {
-        return extractClaim(token, claims -> claims.get("userId", Long.class));
-    }
-
-    public String extractRole(String token) {
-        return extractClaim(token, claims -> claims.get("role", String.class));
     }
 
     private Date extractExpiration(String token) {
