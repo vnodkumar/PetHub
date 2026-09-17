@@ -4,7 +4,9 @@ import com.vk.PetHub.dto.CartItemCreateRequest;
 import com.vk.PetHub.dto.CartItemResponse;
 import com.vk.PetHub.dto.CartItemUpdateRequest;
 import com.vk.PetHub.exception.CartItemNotFoundException;
+import com.vk.PetHub.exception.PermissionDeniedException;
 import com.vk.PetHub.model.CartItem;
+import com.vk.PetHub.model.Order;
 import com.vk.PetHub.model.Product;
 import com.vk.PetHub.model.User;
 import com.vk.PetHub.repository.CartItemRepository;
@@ -82,16 +84,27 @@ public class CartService {
         return cartRepo.findAllByUser(user);
     }
 
-    public void updateCartItem(Long id, CartItemUpdateRequest request) {
+    public void updateCartItem(Long id, Long userId, CartItemUpdateRequest request) {
         //Get CartItem by id, if not found throw exception
         CartItem cartItem = cartRepo.findById(id).orElseThrow(()->new CartItemNotFoundException(id));
+
+        //Ownership Check
+        checkOwnership(cartItem,userId);
 
         cartItem.setQuantity(request.quantity());
 
         cartRepo.save(cartItem);
     }
 
-    public void deleteCartItem(Long id) {
+    public void deleteCartItem(Long id, Long userId) {
+        CartItem cartItem = cartRepo.findById(id).orElseThrow(()->new CartItemNotFoundException(id));
+        //Ownership Check
+        checkOwnership(cartItem,userId);
+
         cartRepo.deleteById(id);
+    }
+
+    public static void checkOwnership(CartItem cartItem, Long userId){
+        if(!cartItem.getUser().getId().equals(userId)) throw new PermissionDeniedException();
     }
 }

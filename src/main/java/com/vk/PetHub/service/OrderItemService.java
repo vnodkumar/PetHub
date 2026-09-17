@@ -43,7 +43,7 @@ public class OrderItemService {
             productService.save(product);
 
             //delete cart item
-            cartService.deleteCartItem(cartItem.getId());
+            cartService.deleteCartItem(cartItem.getId(), user.getId());
 
             orderItems.add(orderItem);
         }

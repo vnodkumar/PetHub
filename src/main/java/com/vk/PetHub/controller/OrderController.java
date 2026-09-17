@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/orders")
+@RequestMapping("/api/v1/orders")
 @Validated
 public class OrderController {
 
@@ -35,8 +35,9 @@ public class OrderController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<HttpStatus> updateOrder(@PathVariable @Positive(message = "Oder Id must be positive") Long id, @Valid @RequestBody OrderUpdateRequest request){
-        orderService.updateOrder(id,request);
+    public ResponseEntity<HttpStatus> updateOrder(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable @Positive(message = "Oder Id must be positive") Long id, @Valid @RequestBody OrderUpdateRequest request){
+        Long userId = userDetails.getId();
+        orderService.updateOrder(id,userId,request);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -47,13 +48,15 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderDetailedResponse> getOrder(@PathVariable @Positive(message = "Order Id must be positive") Long id){
-        return  new ResponseEntity<>(orderService.getOrder(id),HttpStatus.OK);
+    public ResponseEntity<OrderDetailedResponse> getOrder(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable @Positive(message = "Order Id must be positive") Long id){
+        Long userId = userDetails.getId();
+        return  new ResponseEntity<>(orderService.getOrder(id,userId),HttpStatus.OK);
     }
 
     @PutMapping("/{id}/cancel")
-    public ResponseEntity<HttpStatus> cancelOrder(@PathVariable @Positive(message = "Order Id must be positive") Long id){
-        orderService.cancelOrder(id);
+    public ResponseEntity<HttpStatus> cancelOrder(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable @Positive(message = "Order Id must be positive") Long id){
+        Long userId = customUserDetails.getId();
+        orderService.cancelOrder(id,userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

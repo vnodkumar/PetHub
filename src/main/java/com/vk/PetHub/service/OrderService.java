@@ -91,8 +91,11 @@ public class OrderService {
         return totalAmount;
     }
 
-    public void cancelOrder(Long orderId){
+    public void cancelOrder(Long orderId,Long userId){
         Order order = orderRepo.findById(orderId).orElseThrow(()->new OrderNotFoundException(orderId));
+
+        //Ownership Check
+        checkOwnership(order,userId);
 
         //Delivered?
         if(order.getOrderStatus() == Order.OrderStatus.DELIVERED){
@@ -120,8 +123,11 @@ public class OrderService {
         orderRepo.save(order);
     }
 
-    public void updateOrder(Long orderId, OrderUpdateRequest request){
+    public void updateOrder(Long orderId, Long userId, OrderUpdateRequest request){
         Order order = orderRepo.findById(orderId).orElseThrow(()->new OrderNotFoundException(orderId));
+
+        //Ownership Check
+        checkOwnership(order,userId);
 
         //if order cancelled or delivered we can't update order
         if(order.getOrderStatus()== Order.OrderStatus.DELIVERED||order.getOrderStatus()== Order.OrderStatus.CANCELLED){
@@ -153,8 +159,11 @@ public class OrderService {
         return response;
     }
 
-    public OrderDetailedResponse getOrder(Long orderId){
+    public OrderDetailedResponse getOrder(Long orderId, Long userId){
         Order order = orderRepo.findById(orderId).orElseThrow(()->new OrderNotFoundException(orderId));
+
+        //Ownership Check
+        checkOwnership(order,userId);
 
         List<OrderItemResponse> orderItemResponses = orderItemService.getAllOrderItems(order);
 
@@ -169,5 +178,7 @@ public class OrderService {
                 orderItemResponses
         );
     }
-
+    public static void checkOwnership(Order order,Long userId){
+        if(!order.getUser().getId().equals(userId)) throw new PermissionDeniedException();
+    }
 }
