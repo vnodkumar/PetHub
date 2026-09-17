@@ -4,11 +4,13 @@ import com.vk.PetHub.dto.OrderCreateRequest;
 import com.vk.PetHub.dto.OrderDetailedResponse;
 import com.vk.PetHub.dto.OrderSummaryResponse;
 import com.vk.PetHub.dto.OrderUpdateRequest;
+import com.vk.PetHub.model.CustomUserDetails;
 import com.vk.PetHub.service.OrderService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,8 +28,9 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<HttpStatus> createOrder(@Valid @RequestBody OrderCreateRequest request){
-        orderService.createOrder(request);
+    public ResponseEntity<HttpStatus> createOrder(@AuthenticationPrincipal CustomUserDetails customUserDetails,@Valid @RequestBody OrderCreateRequest request){
+        Long userId = customUserDetails.getId();
+        orderService.createOrder(userId,request);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -37,9 +40,10 @@ public class OrderController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/user/{id}")
-    public ResponseEntity<List<OrderSummaryResponse>> orderHistory(@PathVariable @Positive(message = "User Id must be positive") Long id){
-        return new ResponseEntity<>(orderService.orderHistory(id),HttpStatus.OK);
+    @GetMapping
+    public ResponseEntity<List<OrderSummaryResponse>> orderHistory(@AuthenticationPrincipal CustomUserDetails userDetails){
+        Long userId = userDetails.getId();
+        return new ResponseEntity<>(orderService.orderHistory(userId),HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

@@ -3,19 +3,19 @@ package com.vk.PetHub.controller;
 import com.vk.PetHub.dto.UserCreateRequest;
 import com.vk.PetHub.dto.UserUpdateRequest;
 import com.vk.PetHub.dto.UserResponse;
-import com.vk.PetHub.model.User;
+import com.vk.PetHub.model.CustomUserDetails;
 import com.vk.PetHub.service.UserService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/user")
 @Validated
 public class UserController {
 
@@ -27,12 +27,13 @@ public class UserController {
 
     //TO BE REMOVED, jus to work with users
     @GetMapping
-    public ResponseEntity<List<User>> getUsers(){
-        return new ResponseEntity<List<User>>(userService.getUsers(), HttpStatus.OK);
+    public ResponseEntity<List<UserResponse>> getUsers(){
+        return new ResponseEntity<List<UserResponse>>(userService.getUsers(), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> getUserById(@PathVariable @Positive(message = "User Id must be positive") Long id){
+    @GetMapping("/profile")
+    public ResponseEntity<UserResponse> getUserById(@AuthenticationPrincipal CustomUserDetails userDetails){
+        Long id = userDetails.getId();
         UserResponse resp = userService.getUserById(id);
         return ResponseEntity.ok(resp);
     }
@@ -42,8 +43,9 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<HttpStatus> updateUser(@PathVariable @Positive(message = "User Id should be positive") Long id,@Valid @RequestBody UserUpdateRequest request){
+    @PutMapping
+    public ResponseEntity<HttpStatus> updateUser(@AuthenticationPrincipal CustomUserDetails userDetails,@Valid @RequestBody UserUpdateRequest request){
+        Long id = userDetails.getId();
         userService.updateUser(id,request);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

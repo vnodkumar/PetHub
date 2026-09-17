@@ -1,8 +1,5 @@
 package com.vk.PetHub.service;
 
-
-
-import com.vk.PetHub.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -37,7 +34,7 @@ public class JwtService {
                 .claims(claims)
                 .subject(email)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis()+1000*60*10))
+                .expiration(new Date(System.currentTimeMillis()+1000*60*30))
                 .signWith(getSigningKey())
                 .compact();
     }

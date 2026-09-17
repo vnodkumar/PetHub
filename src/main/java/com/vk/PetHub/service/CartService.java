@@ -28,9 +28,8 @@ public class CartService {
     }
 
     //CREATE new cartItem or UPDATE existing cartItem
-    public void createCartItem( CartItemCreateRequest request) {
+    public void createCartItem(Long userId, CartItemCreateRequest request) {
 
-        Long userId = request.userId();
         Long productId = request.productId();
         Integer quantity = request.quantity();
 
@@ -83,16 +82,16 @@ public class CartService {
         return cartRepo.findAllByUser(user);
     }
 
-    public void updateCartItem(Long cartItemId, CartItemUpdateRequest request) {
+    public void updateCartItem(Long id, CartItemUpdateRequest request) {
         //Get CartItem by id, if not found throw exception
-        CartItem cartItem = cartRepo.findById(cartItemId).orElseThrow(()->new CartItemNotFoundException(cartItemId));
+        CartItem cartItem = cartRepo.findById(id).orElseThrow(()->new CartItemNotFoundException(id));
 
         cartItem.setQuantity(request.quantity());
 
         cartRepo.save(cartItem);
     }
 
-    public void deleteCartItem(Long cartItemId) {
-        cartRepo.deleteById(cartItemId);
+    public void deleteCartItem(Long id) {
+        cartRepo.deleteById(id);
     }
 }

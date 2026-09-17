@@ -3,11 +3,13 @@ package com.vk.PetHub.controller;
 import com.vk.PetHub.dto.CartItemCreateRequest;
 import com.vk.PetHub.dto.CartItemResponse;
 import com.vk.PetHub.dto.CartItemUpdateRequest;
+import com.vk.PetHub.model.CustomUserDetails;
 import com.vk.PetHub.service.CartService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,25 +27,27 @@ public class CartController {
     }
 
     @PostMapping
-    public ResponseEntity<HttpStatus> createCartItem(@Valid @RequestBody CartItemCreateRequest request){
-        cartService.createCartItem(request);
+    public ResponseEntity<HttpStatus> createCartItem(@AuthenticationPrincipal CustomUserDetails userDetails,@Valid @RequestBody CartItemCreateRequest request){
+        Long userId = userDetails.getId();
+        cartService.createCartItem(userId,request);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/user/{id}")
-    public ResponseEntity<List<CartItemResponse>> getCart(@PathVariable @Positive(message = "User Id must be positive") Long id){
-        return ResponseEntity.ok(cartService.getCart(id));
+    @GetMapping
+    public ResponseEntity<List<CartItemResponse>> getCart(@AuthenticationPrincipal CustomUserDetails userDetails){
+        Long userId = userDetails.getId();
+        return ResponseEntity.ok(cartService.getCart(userId));
     }
 
-    @PutMapping("/{cartItemId}")
-    public ResponseEntity<HttpStatus> updateCartItem(@PathVariable @Positive(message = "CartItem Id must be positive") Long cartItemId,@Valid @RequestBody CartItemUpdateRequest request){
-        cartService.updateCartItem(cartItemId,request);
+    @PutMapping("/{id}")
+    public ResponseEntity<HttpStatus> updateCartItem(@PathVariable @Positive(message = "CartItem Id must be positive") Long id,@Valid @RequestBody CartItemUpdateRequest request){
+        cartService.updateCartItem(id,request);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("/{cartItemId}")
-    public ResponseEntity<HttpStatus> deleteCartItem(@PathVariable @Positive(message = "CartItem Id must be positive") Long cartItemId){
-        cartService.deleteCartItem(cartItemId);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteCartItem(@PathVariable @Positive(message = "CartItem Id must be positive") Long id){
+        cartService.deleteCartItem(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

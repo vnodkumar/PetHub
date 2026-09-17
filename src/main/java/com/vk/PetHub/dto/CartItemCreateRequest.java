@@ -6,9 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public record CartItemCreateRequest(
-        @NotNull(message = "User Id is required")
-        @Positive(message = "User Id must be a positive number")
-        Long userId,
 
         @NotNull(message = "Product Id is required")
         @Positive(message = "Product Id must be a positive number")

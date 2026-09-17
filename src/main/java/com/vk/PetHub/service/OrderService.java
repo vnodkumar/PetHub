@@ -31,9 +31,9 @@ public class OrderService {
     }
 
     @Transactional
-    public void createOrder(OrderCreateRequest request) {
+    public void createOrder(Long userId,OrderCreateRequest request) {
         //get user
-        User user = userService.getUserEntityById(request.userId());
+        User user = userService.getUserEntityById(userId);
 
         //get cart
         List<CartItem> cart = cartService.getCartEntity(user);

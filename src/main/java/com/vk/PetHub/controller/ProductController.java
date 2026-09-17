@@ -6,7 +6,6 @@ import com.vk.PetHub.dto.ProductSummaryResponse;
 import com.vk.PetHub.dto.ProductUpdateRequest;
 import com.vk.PetHub.service.ProductService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
