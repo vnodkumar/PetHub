@@ -2,6 +2,7 @@ package com.vk.PetHub.filter;
 
 import com.vk.PetHub.service.JwtService;
 import com.vk.PetHub.service.UserService;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,9 +35,18 @@ public class JwtFilter extends OncePerRequestFilter {
         String token=null;
         String email=null;
 
-        if(authHeader!=null && authHeader.startsWith("Bearer ")){
-            token = authHeader.substring(7);
-            email = jwtService.extractEmail(token);
+        //if token expired
+        try{
+            if(authHeader!=null && authHeader.startsWith("Bearer ")){
+                token = authHeader.substring(7);
+                email = jwtService.extractEmail(token);
+            }
+        }
+        catch (ExpiredJwtException ex){
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"message\":\"Token has expired\",\"status\":401}");
+            return;
         }
 
         if(email!=null && SecurityContextHolder.getContext().getAuthentication()==null){
