@@ -4,12 +4,11 @@ import com.vk.PetHub.dto.CartItemCreateRequest;
 import com.vk.PetHub.dto.CartItemResponse;
 import com.vk.PetHub.dto.CartItemUpdateRequest;
 import com.vk.PetHub.exception.CartItemNotFoundException;
-import com.vk.PetHub.exception.PermissionDeniedException;
 import com.vk.PetHub.model.CartItem;
-import com.vk.PetHub.model.Order;
 import com.vk.PetHub.model.Product;
 import com.vk.PetHub.model.User;
 import com.vk.PetHub.repository.CartItemRepository;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -105,6 +104,6 @@ public class CartService {
     }
 
     public static void checkOwnership(CartItem cartItem, Long userId){
-        if(!cartItem.getUser().getId().equals(userId)) throw new PermissionDeniedException();
+        if(!cartItem.getUser().getId().equals(userId)) throw new AccessDeniedException("Access Denied");
     }
 }

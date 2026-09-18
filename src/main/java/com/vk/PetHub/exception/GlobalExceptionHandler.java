@@ -2,12 +2,17 @@ package com.vk.PetHub.exception;
 
 import com.vk.PetHub.dto.CartValidationErrorResponse;
 import com.vk.PetHub.dto.ErrorResponse;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -70,13 +75,26 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
     }
 
-    //Permission Denied
-    @ExceptionHandler(PermissionDeniedException.class)
-    public ResponseEntity<ErrorResponse> handlePermissionDenied(PermissionDeniedException ex){
+    //Access Denied
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handlePermissionDenied(AccessDeniedException ex){
         ErrorResponse error = new ErrorResponse(ex.getMessage(),HttpStatus.FORBIDDEN.value());
         return new ResponseEntity<>(error,HttpStatus.FORBIDDEN);
     }
 
+    //Unauthorized
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorized(BadCredentialsException ex){
+        ErrorResponse error = new ErrorResponse(ex.getMessage(),HttpStatus.UNAUTHORIZED.value());
+        return new ResponseEntity<>(error,HttpStatus.UNAUTHORIZED);
+    }
+
+    //JwtExpired
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<ErrorResponse> handleExpiredJwtException(ExpiredJwtException ex){
+        ErrorResponse error = new ErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
+    }
     //Method args validation
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex){

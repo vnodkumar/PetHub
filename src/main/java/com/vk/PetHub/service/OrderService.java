@@ -4,6 +4,7 @@ import com.vk.PetHub.dto.*;
 import com.vk.PetHub.exception.*;
 import com.vk.PetHub.model.*;
 import com.vk.PetHub.repository.OrderRepository;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -179,6 +180,6 @@ public class OrderService {
         );
     }
     public static void checkOwnership(Order order,Long userId){
-        if(!order.getUser().getId().equals(userId)) throw new PermissionDeniedException();
+        if(!order.getUser().getId().equals(userId)) throw new AccessDeniedException("Access Denied");
     }
 }

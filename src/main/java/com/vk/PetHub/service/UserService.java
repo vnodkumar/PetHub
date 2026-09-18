@@ -8,7 +8,6 @@ import com.vk.PetHub.exception.UserNotFoundException;
 import com.vk.PetHub.model.CustomUserDetails;
 import com.vk.PetHub.model.User;
 import com.vk.PetHub.repository.UserRepository;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,6 +38,7 @@ public class UserService implements UserDetailsService {
                             user.getId(),
                             user.getName(),
                             user.getEmail(),
+                            user.getRole().name(),
                             user.getPhone(),
                             user.getAddress(),
                             user.getCreatedAt()
@@ -72,6 +72,7 @@ public class UserService implements UserDetailsService {
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
+                user.getRole().name(),
                 user.getPhone(),
                 user.getAddress(),
                 user.getCreatedAt()
