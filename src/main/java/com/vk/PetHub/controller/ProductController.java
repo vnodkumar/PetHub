@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +38,7 @@ public class ProductController {
     }
 
     //Create New Product
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<HttpStatus> createProduct(@Valid @RequestBody ProductCreateRequest request){
         productService.createProduct(request);
@@ -44,6 +46,7 @@ public class ProductController {
     }
 
     //Update Product
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<HttpStatus> updateProduct(@PathVariable @Positive(message = "Product Id should be positive") Long id,@Valid @RequestBody ProductUpdateRequest request){
         productService.updateProduct(id,request);
@@ -51,6 +54,7 @@ public class ProductController {
     }
 
     //Delete Product
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteProduct(@PathVariable @Positive(message = "Product Id should be positive") Long id){
         productService.deleteProduct(id);
