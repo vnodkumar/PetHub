@@ -32,7 +32,7 @@ public class OrderService {
     }
 
     @Transactional
-    public void createOrder(Long userId,OrderCreateRequest request) {
+    public Long createOrder(Long userId,OrderCreateRequest request) {
         //get user
         User user = userService.getUserEntityById(userId);
 
@@ -57,6 +57,7 @@ public class OrderService {
 
         //Create Order Items
         orderItemService.createOrderItems(order,cart);
+        return order.getId();
     }
 
     public static BigDecimal checkOrderIssues(List<CartItem> cart){

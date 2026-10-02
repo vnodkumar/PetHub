@@ -28,10 +28,11 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<HttpStatus> createOrder(@AuthenticationPrincipal CustomUserDetails customUserDetails,@Valid @RequestBody OrderCreateRequest request){
+    public ResponseEntity<Long> createOrder(@AuthenticationPrincipal CustomUserDetails customUserDetails,@Valid @RequestBody OrderCreateRequest request){
         Long userId = customUserDetails.getId();
-        orderService.createOrder(userId,request);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        Long id = orderService.createOrder(userId,request);
+        System.out.println(id);
+        return new ResponseEntity<>(id,HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
