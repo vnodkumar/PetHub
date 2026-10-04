@@ -43,7 +43,7 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_status",nullable = false)
-    private PaymentStatus paymentStatus = PaymentStatus.PENDING;
+    private PaymentStatus paymentStatus = PaymentStatus.PAID;
 
     @OneToMany(mappedBy = "order",cascade = CascadeType.ALL)
     @ToString.Exclude
@@ -59,6 +59,6 @@ public class Order {
         CONFIRMED,DELIVERED,CANCELLED
     }
     public enum PaymentStatus{
-        PENDING,PAID
+        PENDING,PAID,VOIDED,REFUND_INITIATED,REFUNDED
     }
 }

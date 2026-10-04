@@ -121,6 +121,11 @@ public class OrderService {
 
         //set order status as canceled and
         order.setOrderStatus(Order.OrderStatus.CANCELLED);
+        //set payment status
+        if("PENDING".equals(order.getPaymentStatus().name()))
+            order.setPaymentStatus(Order.PaymentStatus.VOIDED);
+        else
+            order.setPaymentStatus(Order.PaymentStatus.REFUNDED);
 
         orderRepo.save(order);
     }
@@ -143,7 +148,7 @@ public class OrderService {
 
     public List<OrderSummaryResponse> orderHistory( Long userId) {
         User user = userService.getUserEntityById(userId);
-        List<Order> orders = orderRepo.findAllByUser(user);
+        List<Order> orders = orderRepo.findAllByUserOrderByOrderDateDesc(user);
 
         List<OrderSummaryResponse> response = new ArrayList<>();
 
