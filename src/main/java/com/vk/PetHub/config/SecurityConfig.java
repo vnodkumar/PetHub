@@ -31,7 +31,7 @@ import java.util.List;
 public class SecurityConfig {
 
     @Value("${CORS_URL}")
-    private String corsUrl;
+    private List<String> allowedOrigins;
     private final ApplicationContext context;
 
     public SecurityConfig(ApplicationContext context){
@@ -61,7 +61,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of(corsUrl));
+        config.setAllowedOrigins(allowedOrigins);
         config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization","Content-Type"));
         config.setAllowCredentials(true);
